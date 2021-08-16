@@ -36,17 +36,28 @@
                                 <color key="textColor" red="0.071826305257374434" green="0.63760701283038101" blue="0.6642034471649485" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="a04-Pk-W32">
+                                <rect key="frame" x="167" y="554" width="80" height="80"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="80" id="2a7-nT-8WN"/>
+                                    <constraint firstAttribute="width" constant="80" id="4cX-Bg-eFw"/>
+                                </constraints>
+                                <state key="normal" title="Button" image="Reverb"/>
+                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstItem="a04-Pk-W32" firstAttribute="top" secondItem="pKr-wi-esw" secondAttribute="bottom" constant="30" id="9z5-KX-d6X"/>
                             <constraint firstItem="DAV-6c-z6z" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="BWs-dG-zHZ"/>
                             <constraint firstItem="pKr-wi-esw" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="V0b-X4-cMV"/>
                             <constraint firstItem="pKr-wi-esw" firstAttribute="top" secondItem="DAV-6c-z6z" secondAttribute="bottom" constant="15" id="aSO-AL-rrT"/>
+                            <constraint firstItem="a04-Pk-W32" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="bcg-rY-6ja"/>
                             <constraint firstItem="DAV-6c-z6z" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="rUc-es-lfB"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="modulButton" destination="a04-Pk-W32" id="uQx-n0-M9b"/>
                         <outlet property="recordButton" destination="DAV-6c-z6z" id="Lx9-o5-ZAU"/>
                     </connections>
                 </viewController>
@@ -57,6 +68,7 @@
     </scenes>
     <resources>
         <image name="Record" width="155" height="155"/>
+        <image name="Reverb" width="90" height="90"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

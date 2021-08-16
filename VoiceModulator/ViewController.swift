@@ -11,29 +11,66 @@ import AVFoundation
 class ViewController: UIViewController, AVAudioRecorderDelegate {
     
     @IBOutlet weak var recordButton: UIButton!
+    @IBOutlet weak var modulButton: UIButton!
     
     var recordedAudioURL: URL!
     var audioFile: AVAudioFile!
     var audioEngine: AVAudioEngine!
     var audioPlayerNode: AVAudioPlayerNode!
     var stopTimer: Timer!
-    
+    var audioRecorder: AVAudioRecorder!
+    var isRecording: Bool = false
     enum PlayingState { case playing, notPlaying }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        setupAudio()
+        modulButton.isEnabled = false
     }
     
     @IBAction func recordButton(_ sender: Any) {
+        if !isRecording {
+            let dirPath = NSSearchPathForDirectoriesInDomains(.documentDirectory,.userDomainMask, true)[0] as String
+            let recordingName = "recordedVoice.wav"
+            let pathArray = [dirPath, recordingName]
+            let filePath = URL(string: pathArray.joined(separator: "/"))
+            
+            let audioSession = AVAudioSession.sharedInstance()
+            try! audioSession.setCategory(.playAndRecord, mode: .spokenAudio, options: .defaultToSpeaker)
+            
+            try! audioRecorder = AVAudioRecorder(url: filePath!, settings: [:])
+            audioRecorder.delegate = self
+            audioRecorder.isMeteringEnabled = true
+            audioRecorder.prepareToRecord()
+            audioRecorder.record()
+            isRecording = true
+            recordButton.setImage(UIImage(named: "Record.png"), for: .normal)
+        } else {
+            audioRecorder.stop()
+            isRecording = false
+            recordButton.setImage(UIImage(named: "Stop.png"), for: .normal)
+            let audioSession = AVAudioSession.sharedInstance()
+            try! audioSession.setActive(false)
+        }
     }
     
-    func setupAudio(){
+    func setupAudio(url: URL){
         do {
-            audioFile = try AVAudioFile(forReading: recordedAudioURL as URL)
+            audioFile = try AVAudioFile(forReading: url)
         } catch {
             print("setupAudio Error")
+        }
+    }
+    
+    func audioRecorderDidFinishRecording(_ recorder: AVAudioRecorder, successfully flag: Bool) {
+        if flag {
+            recordedAudioURL = audioRecorder.url
+            setupAudio(url: recordedAudioURL)
+            modulButton.isEnabled = true
+            recordButton.isEnabled = false
+        } else {
+            print("recording was nor succesful")
+            
         }
     }
     
