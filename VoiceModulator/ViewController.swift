@@ -11,9 +11,15 @@ import AVFoundation
 class ViewController: UIViewController, AVAudioRecorderDelegate {
     
     @IBOutlet weak var recordButton: UIButton!
-    @IBOutlet weak var modulButton: UIButton!
     @IBOutlet weak var recordLabel: UILabel!
+    @IBOutlet weak var modulButton: UIButton!
     @IBOutlet weak var modulLabel: UILabel!
+    @IBOutlet weak var echoButton: UIButton!
+    @IBOutlet weak var echoLabel: UILabel!
+    @IBOutlet weak var speedButton: UIButton!
+    @IBOutlet weak var speedLabel: UILabel!
+    @IBOutlet weak var pitchVal: UITextField!
+    @IBOutlet weak var speedVal: UITextField!
     
     var recordedAudioURL: URL!
     var audioFile: AVAudioFile!
@@ -22,14 +28,30 @@ class ViewController: UIViewController, AVAudioRecorderDelegate {
     var stopTimer: Timer!
     var audioRecorder: AVAudioRecorder!
     var isRecording: Bool = false
+    var isPlaying: Bool = false
     
     enum PlayingState { case playing, notPlaying }
+    
+    enum ButtonType: Int {
+        case lowPitch = 0, echo, fast, reverb
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         modulButton.isEnabled = false
         modulLabel.isEnabled = false
+        echoButton.isEnabled = false
+        echoLabel.isEnabled = false
+        speedButton.isEnabled = false
+        speedLabel.isEnabled = false
+        pitchVal.isEnabled = false
+        speedVal.isEnabled = false
+        
+        //to dismissKeyboard
+        let tap = UITapGestureRecognizer(target: self, action: #selector(UIInputViewController.dismissKeyboard))
+        view.addGestureRecognizer(tap)
+        
     }
     
     @IBAction func recordButton(_ sender: Any) {
@@ -39,6 +61,7 @@ class ViewController: UIViewController, AVAudioRecorderDelegate {
             let pathArray = [dirPath, recordingName]
             let filePath = URL(string: pathArray.joined(separator: "/"))
             
+            //generate singletone instance
             let audioSession = AVAudioSession.sharedInstance()
             try! audioSession.setCategory(.playAndRecord, mode: .spokenAudio, options: .defaultToSpeaker)
             
@@ -58,8 +81,25 @@ class ViewController: UIViewController, AVAudioRecorderDelegate {
         }
     }
     
-    @IBAction func modulButton(_ sender: Any) {
-        pitchSound(pitch: -220)
+     //called autometically
+    func audioRecorderDidFinishRecording(_ recorder: AVAudioRecorder, successfully flag: Bool) {
+        if flag {
+            recordedAudioURL = audioRecorder.url
+            setupAudio(url: recordedAudioURL)
+            
+            modulButton.isEnabled = true
+            modulLabel.isEnabled = true
+            echoButton.isEnabled = true
+            echoLabel.isEnabled = true
+            speedButton.isEnabled = true
+            speedLabel.isEnabled = true
+            pitchVal.isEnabled = true
+            speedVal.isEnabled = true
+            recordButton.isEnabled = false
+            recordLabel.isEnabled = false
+        } else {
+            print("recording was nor succesful")
+        }
     }
     
     func setupAudio(url: URL){
@@ -70,22 +110,24 @@ class ViewController: UIViewController, AVAudioRecorderDelegate {
         }
     }
     
-    func audioRecorderDidFinishRecording(_ recorder: AVAudioRecorder, successfully flag: Bool) {
-        if flag {
-            recordedAudioURL = audioRecorder.url
-            setupAudio(url: recordedAudioURL)
-            modulButton.isEnabled = true
-            modulLabel.isEnabled = true
-            recordButton.isEnabled = false
-            recordLabel.isEnabled = false
-            
-        } else {
-            print("recording was nor succesful")
-            
+    @IBAction func playButton(_ sender: UIButton) {
+        switch(ButtonType(rawValue: sender.tag)!){
+        case .lowPitch:
+            let val = (pitchVal.text! as NSString).floatValue
+            let pitch: Float = val
+            playSound(pitch: pitch)
+        case .fast:
+            let val = (speedVal.text! as NSString).floatValue == 0 ? 1 : (speedVal.text! as NSString).floatValue
+            let rate: Float = val
+            playSound(rate: rate)
+        case .echo:
+            playSound(echo: true)
+        case .reverb:
+            playSound(reverb: true)
         }
     }
     
-    func pitchSound(rate: Float? = nil, pitch: Float? = nil, reverb: Bool = false){
+    func playSound(rate: Float? = nil, pitch: Float? = nil, echo: Bool = false, reverb: Bool = false){
         audioEngine = AVAudioEngine()
         audioPlayerNode = AVAudioPlayerNode()
         audioEngine.attach(audioPlayerNode)
@@ -100,7 +142,24 @@ class ViewController: UIViewController, AVAudioRecorderDelegate {
         }
         audioEngine.attach(changeRatePitchNode)
         
-        connectAudioNodes(audioPlayerNode, changeRatePitchNode, audioEngine.outputNode)
+        let echoNode = AVAudioUnitDistortion()
+        echoNode.loadFactoryPreset(.multiEcho1)
+        audioEngine.attach(echoNode)
+        
+        let reverbNode = AVAudioUnitReverb()
+        reverbNode.loadFactoryPreset(.cathedral)
+        reverbNode.wetDryMix = 50
+        audioEngine.attach(reverbNode)
+        
+        if echo == true && reverb == true {
+            connectAudioNodes(audioPlayerNode, changeRatePitchNode, echoNode, reverbNode, audioEngine.outputNode)
+        } else if echo == true {
+            connectAudioNodes(audioPlayerNode, changeRatePitchNode, echoNode, audioEngine.outputNode)
+        } else if reverb == true {
+            connectAudioNodes(audioPlayerNode, changeRatePitchNode, reverbNode, audioEngine.outputNode)
+        } else {
+            connectAudioNodes(audioPlayerNode, changeRatePitchNode, audioEngine.outputNode)
+        }
         
         audioPlayerNode.stop()
         audioPlayerNode.scheduleFile(audioFile, at: nil) {
@@ -160,6 +219,8 @@ class ViewController: UIViewController, AVAudioRecorderDelegate {
             audioEngine.connect(nodes[x], to: nodes[x+1], format: audioFile.processingFormat)
         }
     }
-    
+        @objc func dismissKeyboard() {
+            view.endEditing(true)
+        }
 }
 
