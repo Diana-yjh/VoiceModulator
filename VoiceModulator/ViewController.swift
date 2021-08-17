@@ -12,6 +12,8 @@ class ViewController: UIViewController, AVAudioRecorderDelegate {
     
     @IBOutlet weak var recordButton: UIButton!
     @IBOutlet weak var modulButton: UIButton!
+    @IBOutlet weak var recordLabel: UILabel!
+    @IBOutlet weak var modulLabel: UILabel!
     
     var recordedAudioURL: URL!
     var audioFile: AVAudioFile!
@@ -20,12 +22,14 @@ class ViewController: UIViewController, AVAudioRecorderDelegate {
     var stopTimer: Timer!
     var audioRecorder: AVAudioRecorder!
     var isRecording: Bool = false
+    
     enum PlayingState { case playing, notPlaying }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         modulButton.isEnabled = false
+        modulLabel.isEnabled = false
     }
     
     @IBAction func recordButton(_ sender: Any) {
@@ -44,14 +48,18 @@ class ViewController: UIViewController, AVAudioRecorderDelegate {
             audioRecorder.prepareToRecord()
             audioRecorder.record()
             isRecording = true
-            recordButton.setImage(UIImage(named: "Record.png"), for: .normal)
+            recordButton.setImage(UIImage(named: "Stop.png"), for: .normal)
         } else {
             audioRecorder.stop()
             isRecording = false
-            recordButton.setImage(UIImage(named: "Stop.png"), for: .normal)
+            recordButton.setImage(UIImage(named: "Record.png"), for: .normal)
             let audioSession = AVAudioSession.sharedInstance()
             try! audioSession.setActive(false)
         }
+    }
+    
+    @IBAction func modulButton(_ sender: Any) {
+        pitchSound(pitch: -220)
     }
     
     func setupAudio(url: URL){
@@ -67,7 +75,10 @@ class ViewController: UIViewController, AVAudioRecorderDelegate {
             recordedAudioURL = audioRecorder.url
             setupAudio(url: recordedAudioURL)
             modulButton.isEnabled = true
+            modulLabel.isEnabled = true
             recordButton.isEnabled = false
+            recordLabel.isEnabled = false
+            
         } else {
             print("recording was nor succesful")
             
@@ -89,6 +100,8 @@ class ViewController: UIViewController, AVAudioRecorderDelegate {
         }
         audioEngine.attach(changeRatePitchNode)
         
+        connectAudioNodes(audioPlayerNode, changeRatePitchNode, audioEngine.outputNode)
+        
         audioPlayerNode.stop()
         audioPlayerNode.scheduleFile(audioFile, at: nil) {
             var delayInSeconds: Double = 0
@@ -102,7 +115,6 @@ class ViewController: UIViewController, AVAudioRecorderDelegate {
                 }
             }
             
-            // schedule a stop timer for when audio finishes playing
             self.stopTimer = Timer(timeInterval: delayInSeconds, target: self, selector: #selector(ViewController.stopAudio), userInfo: nil, repeats: false)
             RunLoop.main.add(self.stopTimer!, forMode: RunLoop.Mode.default)
         }
@@ -113,8 +125,6 @@ class ViewController: UIViewController, AVAudioRecorderDelegate {
             print("error occurs!")
             return
         }
-        
-        // play the recording!
         audioPlayerNode.play()
     }
     
@@ -144,5 +154,12 @@ class ViewController: UIViewController, AVAudioRecorderDelegate {
             audioEngine.reset()
         }
     }
+    
+    func connectAudioNodes(_ nodes: AVAudioNode...) {
+        for x in 0..<nodes.count-1 {
+            audioEngine.connect(nodes[x], to: nodes[x+1], format: audioFile.processingFormat)
+        }
+    }
+    
 }
 

@@ -43,22 +43,38 @@
                                     <constraint firstAttribute="width" constant="80" id="4cX-Bg-eFw"/>
                                 </constraints>
                                 <state key="normal" title="Button" image="Reverb"/>
+                                <connections>
+                                    <action selector="modulButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="9VT-DF-V1q"/>
+                                </connections>
                             </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Voice Modulation" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="a5R-63-LKh">
+                                <rect key="frame" x="132" y="649" width="150" height="21"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="150" id="olG-PW-2bJ"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="0.90702316441486786" green="0.27313794060413832" blue="0.11494792244154348" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="a04-Pk-W32" firstAttribute="top" secondItem="pKr-wi-esw" secondAttribute="bottom" constant="30" id="9z5-KX-d6X"/>
+                            <constraint firstItem="a5R-63-LKh" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="Aie-ZQ-0Jq"/>
                             <constraint firstItem="DAV-6c-z6z" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="BWs-dG-zHZ"/>
                             <constraint firstItem="pKr-wi-esw" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="V0b-X4-cMV"/>
                             <constraint firstItem="pKr-wi-esw" firstAttribute="top" secondItem="DAV-6c-z6z" secondAttribute="bottom" constant="15" id="aSO-AL-rrT"/>
                             <constraint firstItem="a04-Pk-W32" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="bcg-rY-6ja"/>
                             <constraint firstItem="DAV-6c-z6z" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="rUc-es-lfB"/>
+                            <constraint firstItem="a5R-63-LKh" firstAttribute="top" secondItem="a04-Pk-W32" secondAttribute="bottom" constant="15" id="t3w-yO-2rw"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="modulButton" destination="a04-Pk-W32" id="uQx-n0-M9b"/>
+                        <outlet property="modulLabel" destination="a5R-63-LKh" id="lHH-XE-s89"/>
                         <outlet property="recordButton" destination="DAV-6c-z6z" id="Lx9-o5-ZAU"/>
+                        <outlet property="recordLabel" destination="pKr-wi-esw" id="Bls-Mp-GkP"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
