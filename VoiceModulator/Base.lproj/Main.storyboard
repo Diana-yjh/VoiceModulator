@@ -129,6 +129,16 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fhk-Hj-V8e">
+                                <rect key="frame" x="157" y="688" width="100" height="30"/>
+                                <color key="backgroundColor" red="0.78604373364949243" green="0.43754468060951351" blue="0.84267407655715942" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="100" id="IlC-Pd-McX"/>
+                                </constraints>
+                                <state key="normal" title="Play">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -142,6 +152,7 @@
                             <constraint firstItem="DAV-6c-z6z" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="90" id="ZVL-ZH-SqN"/>
                             <constraint firstItem="a5R-63-LKh" firstAttribute="centerX" secondItem="a04-Pk-W32" secondAttribute="centerX" id="ZrB-d8-1OG"/>
                             <constraint firstItem="pKr-wi-esw" firstAttribute="top" secondItem="DAV-6c-z6z" secondAttribute="bottom" constant="15" id="aSO-AL-rrT"/>
+                            <constraint firstItem="fhk-Hj-V8e" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="bQw-cG-Iih"/>
                             <constraint firstItem="DAV-6c-z6z" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="50" id="bag-0y-7iz"/>
                             <constraint firstItem="neD-5P-Qjn" firstAttribute="centerX" secondItem="8Py-Ia-bDv" secondAttribute="centerX" id="cnG-gd-JUf"/>
                             <constraint firstItem="8KC-QZ-Oug" firstAttribute="centerX" secondItem="bRQ-qT-4Iq" secondAttribute="centerX" id="edq-iD-F2n"/>
@@ -155,6 +166,7 @@
                             <constraint firstItem="0WF-mf-0XM" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="90" id="skf-T0-ZpS"/>
                             <constraint firstItem="a5R-63-LKh" firstAttribute="top" secondItem="a04-Pk-W32" secondAttribute="bottom" constant="15" id="t3w-yO-2rw"/>
                             <constraint firstItem="KS5-5K-DxM" firstAttribute="centerY" secondItem="0WF-mf-0XM" secondAttribute="centerY" id="yKn-V5-Cnn"/>
+                            <constraint firstItem="fhk-Hj-V8e" firstAttribute="top" secondItem="5fn-iu-DEi" secondAttribute="bottom" constant="40" id="zoM-99-Qot"/>
                         </constraints>
                     </view>
                     <connections>
@@ -163,6 +175,7 @@
                         <outlet property="modulButton" destination="a04-Pk-W32" id="uQx-n0-M9b"/>
                         <outlet property="modulLabel" destination="a5R-63-LKh" id="lHH-XE-s89"/>
                         <outlet property="pitchVal" destination="bRQ-qT-4Iq" id="t5X-JX-vz4"/>
+                        <outlet property="playButton" destination="fhk-Hj-V8e" id="rv8-hJ-cLW"/>
                         <outlet property="recordButton" destination="DAV-6c-z6z" id="Lx9-o5-ZAU"/>
                         <outlet property="recordLabel" destination="pKr-wi-esw" id="Bls-Mp-GkP"/>
                         <outlet property="speedButton" destination="0WF-mf-0XM" id="IpT-15-cs2"/>

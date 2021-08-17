@@ -20,6 +20,7 @@ class ViewController: UIViewController, AVAudioRecorderDelegate {
     @IBOutlet weak var speedLabel: UILabel!
     @IBOutlet weak var pitchVal: UITextField!
     @IBOutlet weak var speedVal: UITextField!
+    @IBOutlet weak var playButton: UIButton!
     
     var recordedAudioURL: URL!
     var audioFile: AVAudioFile!
@@ -47,6 +48,7 @@ class ViewController: UIViewController, AVAudioRecorderDelegate {
         speedLabel.isEnabled = false
         pitchVal.isEnabled = false
         speedVal.isEnabled = false
+        playButton.isEnabled = false
         
         //to dismissKeyboard
         let tap = UITapGestureRecognizer(target: self, action: #selector(UIInputViewController.dismissKeyboard))
@@ -95,6 +97,7 @@ class ViewController: UIViewController, AVAudioRecorderDelegate {
             speedLabel.isEnabled = true
             pitchVal.isEnabled = true
             speedVal.isEnabled = true
+            playButton.isEnabled = true
             recordButton.isEnabled = false
             recordLabel.isEnabled = false
         } else {
