@@ -20,7 +20,8 @@ class ViewController: UIViewController, AVAudioRecorderDelegate {
     @IBOutlet weak var speedLabel: UILabel!
     @IBOutlet weak var pitchVal: UITextField!
     @IBOutlet weak var speedVal: UITextField!
-    @IBOutlet weak var playButton: UIButton!
+    @IBOutlet weak var echoVal: UITextField!
+    @IBOutlet weak var combButton: UIButton!
     
     var recordedAudioURL: URL!
     var audioFile: AVAudioFile!
@@ -30,11 +31,22 @@ class ViewController: UIViewController, AVAudioRecorderDelegate {
     var audioRecorder: AVAudioRecorder!
     var isRecording: Bool = false
     var isPlaying: Bool = false
+    var pit: Float = 0
+    var fas: Float = 1
+    var ech: Bool = false
+    var rev: Bool = false
     
     enum PlayingState { case playing, notPlaying }
     
     enum ButtonType: Int {
         case lowPitch = 0, echo, fast, reverb
+    }
+    
+    struct defaultVal {
+        var pitch: Float = 0
+        var echo: Bool = false
+        var fast: Float = 1
+        var reverb: Bool = false
     }
     
     override func viewDidLoad() {
@@ -48,12 +60,12 @@ class ViewController: UIViewController, AVAudioRecorderDelegate {
         speedLabel.isEnabled = false
         pitchVal.isEnabled = false
         speedVal.isEnabled = false
-        playButton.isEnabled = false
+        echoVal.isEnabled = false
+        combButton.isEnabled = false
         
         //to dismissKeyboard
         let tap = UITapGestureRecognizer(target: self, action: #selector(UIInputViewController.dismissKeyboard))
         view.addGestureRecognizer(tap)
-        
     }
     
     @IBAction func recordButton(_ sender: Any) {
@@ -63,7 +75,7 @@ class ViewController: UIViewController, AVAudioRecorderDelegate {
             let pathArray = [dirPath, recordingName]
             let filePath = URL(string: pathArray.joined(separator: "/"))
             
-            //generate singletone instance
+            //to activate audio session
             let audioSession = AVAudioSession.sharedInstance()
             try! audioSession.setCategory(.playAndRecord, mode: .spokenAudio, options: .defaultToSpeaker)
             
@@ -83,7 +95,7 @@ class ViewController: UIViewController, AVAudioRecorderDelegate {
         }
     }
     
-     //called autometically
+    //called autometically
     func audioRecorderDidFinishRecording(_ recorder: AVAudioRecorder, successfully flag: Bool) {
         if flag {
             recordedAudioURL = audioRecorder.url
@@ -97,7 +109,8 @@ class ViewController: UIViewController, AVAudioRecorderDelegate {
             speedLabel.isEnabled = true
             pitchVal.isEnabled = true
             speedVal.isEnabled = true
-            playButton.isEnabled = true
+            echoVal.isEnabled = true
+            combButton.isEnabled = true
             recordButton.isEnabled = false
             recordLabel.isEnabled = false
         } else {
@@ -118,16 +131,22 @@ class ViewController: UIViewController, AVAudioRecorderDelegate {
         case .lowPitch:
             let val = (pitchVal.text! as NSString).floatValue
             let pitch: Float = val
-            playSound(pitch: pitch)
+            pit = pitch
         case .fast:
             let val = (speedVal.text! as NSString).floatValue == 0 ? 1 : (speedVal.text! as NSString).floatValue
             let rate: Float = val
-            playSound(rate: rate)
+            fas = rate
         case .echo:
-            playSound(echo: true)
+            let echo = (echoVal.text! as NSString).boolValue
+            ech = echo
         case .reverb:
-            playSound(reverb: true)
+            rev = true
         }
+    }
+    
+    @IBAction func combButton(_ sender: Any) {
+        print("rate = \(fas), pitch = \(pit), echo = \(ech), reverb = \(rev)")
+        playSound(rate: fas, pitch: pit, echo: ech, reverb: rev)
     }
     
     func playSound(rate: Float? = nil, pitch: Float? = nil, echo: Bool = false, reverb: Bool = false){
