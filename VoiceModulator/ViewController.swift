@@ -34,19 +34,17 @@ class ViewController: UIViewController, AVAudioRecorderDelegate {
     var pit: Float = 0
     var fas: Float = 1
     var ech: Float = 0
-    var rev: Bool = false
     
     enum PlayingState { case playing, notPlaying }
     
     enum ButtonType: Int {
-        case lowPitch = 0, echo, fast, reverb
+        case lowPitch = 0, echo, fast
     }
     
     struct defaultVal {
         var pitch: Float = 0
         var echo: Float = 0
         var fast: Float = 1
-        var reverb: Bool = false
     }
     
     override func viewDidLoad() {
@@ -139,14 +137,12 @@ class ViewController: UIViewController, AVAudioRecorderDelegate {
         case .echo:
             let echo = (echoVal.text! as NSString).floatValue
             ech = echo
-        case .reverb:
-            rev = true
         }
     }
     
     @IBAction func combButton(_ sender: Any) {
-        print("rate = \(fas), pitch = \(pit), echo = \(ech), reverb = \(rev)")
-        playSound(rate: fas, pitch: pit, echo: ech, reverb: rev)
+        print("rate = \(fas), pitch = \(pit), echo = \(ech)")
+        playSound(rate: fas, pitch: pit, echo: ech)
     }
     
     func playSound(rate: Float? = nil, pitch: Float? = nil, echo: Float = 0, reverb: Bool = false){
@@ -169,12 +165,6 @@ class ViewController: UIViewController, AVAudioRecorderDelegate {
         echoNode.loadFactoryPreset(.multiEcho1)
         echoNode.wetDryMix = echo
         audioEngine.attach(echoNode)
-        
-        //to set reverb
-        let reverbNode = AVAudioUnitReverb()
-        reverbNode.loadFactoryPreset(.cathedral)
-        reverbNode.wetDryMix = 50
-        audioEngine.attach(reverbNode)
         
         if echo != 0 {
             connectAudioNodes(audioPlayerNode, changeRatePitchNode, echoNode, audioEngine.outputNode)
