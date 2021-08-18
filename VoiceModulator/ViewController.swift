@@ -33,7 +33,7 @@ class ViewController: UIViewController, AVAudioRecorderDelegate {
     var isPlaying: Bool = false
     var pit: Float = 0
     var fas: Float = 1
-    var ech: Bool = false
+    var ech: Float = 0
     var rev: Bool = false
     
     enum PlayingState { case playing, notPlaying }
@@ -44,7 +44,7 @@ class ViewController: UIViewController, AVAudioRecorderDelegate {
     
     struct defaultVal {
         var pitch: Float = 0
-        var echo: Bool = false
+        var echo: Float = 0
         var fast: Float = 1
         var reverb: Bool = false
     }
@@ -137,7 +137,7 @@ class ViewController: UIViewController, AVAudioRecorderDelegate {
             let rate: Float = val
             fas = rate
         case .echo:
-            let echo = (echoVal.text! as NSString).boolValue
+            let echo = (echoVal.text! as NSString).floatValue
             ech = echo
         case .reverb:
             rev = true
@@ -149,7 +149,7 @@ class ViewController: UIViewController, AVAudioRecorderDelegate {
         playSound(rate: fas, pitch: pit, echo: ech, reverb: rev)
     }
     
-    func playSound(rate: Float? = nil, pitch: Float? = nil, echo: Bool = false, reverb: Bool = false){
+    func playSound(rate: Float? = nil, pitch: Float? = nil, echo: Float = 0, reverb: Bool = false){
         audioEngine = AVAudioEngine()
         audioPlayerNode = AVAudioPlayerNode()
         audioEngine.attach(audioPlayerNode)
@@ -164,21 +164,20 @@ class ViewController: UIViewController, AVAudioRecorderDelegate {
         }
         audioEngine.attach(changeRatePitchNode)
         
+        //to set echo
         let echoNode = AVAudioUnitDistortion()
         echoNode.loadFactoryPreset(.multiEcho1)
+        echoNode.wetDryMix = echo
         audioEngine.attach(echoNode)
         
+        //to set reverb
         let reverbNode = AVAudioUnitReverb()
         reverbNode.loadFactoryPreset(.cathedral)
         reverbNode.wetDryMix = 50
         audioEngine.attach(reverbNode)
         
-        if echo == true && reverb == true {
-            connectAudioNodes(audioPlayerNode, changeRatePitchNode, echoNode, reverbNode, audioEngine.outputNode)
-        } else if echo == true {
+        if echo != 0 {
             connectAudioNodes(audioPlayerNode, changeRatePitchNode, echoNode, audioEngine.outputNode)
-        } else if reverb == true {
-            connectAudioNodes(audioPlayerNode, changeRatePitchNode, reverbNode, audioEngine.outputNode)
         } else {
             connectAudioNodes(audioPlayerNode, changeRatePitchNode, audioEngine.outputNode)
         }
